@@ -17,13 +17,27 @@ public class Apartment {
     private int id;
 
     @Column(length = 50)
-    private int number;
+    private int number; //Số phòng != id phòng
     @Column(length = 50)
     private double area;
     @Column(length = 50)
     private int rooms;
+    @Column
+    private boolean available;
+    @Column(length = 50)
+    private int capacity;
+
 
     @OneToMany(mappedBy = "apartment")
     private List<Resident> residents;
+
+    @ManyToOne
+    private Manager manager;
+
+    @OneToMany(mappedBy = "apartment")
+    private List<ServiceUsage> serviceUsages;
+    @Column(length = 50)
+    private double totalCost;
+
 
 }
