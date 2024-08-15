@@ -21,7 +21,7 @@ public class ApartmentController {
     }
 
     @GetMapping("/{id}")
-    public Apartment getApartmentById(@PathVariable int id) {
+    public Apartment getApartmentById(@PathVariable Integer id) {
         return apartmentService.getApartmentById(id);
     }
     @PostMapping
@@ -32,12 +32,12 @@ public class ApartmentController {
     }
 
     @PutMapping("/{id}")
-    public Apartment updateApartment(@PathVariable int id, @RequestBody Apartment apartmentDetails) {
+    public Apartment updateApartment(@PathVariable Integer id, @RequestBody Apartment apartmentDetails) {
         return apartmentService.updateApartment(id, apartmentDetails);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteApartment(@PathVariable int id) {
+    public void deleteApartment(@PathVariable Integer id) {
         apartmentService.deleteApartment(id);
     }
 }

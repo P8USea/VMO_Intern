@@ -31,6 +31,7 @@ public class ApartmentCostService {
     @Autowired
     private ServiceUsageRepository serviceUsageRepository;
 
+//Tiền dịch vụ ứng với loại dịch vụ hàng tháng của 1 căn hộ trong 1 tháng
     public double ApartmentMonthlyServiceTypeCost(int apartmentId, int serviceTypeId, YearMonth month) {
         ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
                 .orElseThrow(() -> new EntityNotFoundException("ServiceType not found"));
@@ -43,12 +44,12 @@ public class ApartmentCostService {
     }
 
 
-
+//Tổng tiền dịch vụ của 1 căn hộ trong 1 tháng
     public double ApartmentMonthlyTotalCost(int apartmentId, YearMonth month) {
         List<ServiceUsage> usages = serviceUsageRepository.findByApartmentAndMonth(apartmentId, month);
         return usages.stream().mapToDouble(ServiceUsage::getTotal).sum();
     }
-
+//Gán tiền dịch vụ cho 1 căn hộ
     public Apartment ApartmentMonthlyTotalCostAssignment(int apartmentId, YearMonth month) {
                 Apartment apartment = apartmentRepository.findById(apartmentId).orElse(null);
                 double totalCost = ApartmentMonthlyTotalCost(apartmentId, month);
@@ -56,6 +57,7 @@ public class ApartmentCostService {
                 return apartmentRepository.save(apartment);
 
     }
+    //Gán tiền dịch vụ của 1 loại dịch vụ cho 1 căn hộ
     public void ApartmentMonthlyServiceTypeCostAssignment(int apartmentId, int serviceTypeId, YearMonth month) {
         ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
                 .orElseThrow(() -> new EntityNotFoundException("ServiceType not found"));

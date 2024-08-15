@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.time.YearMonth;
 import java.util.List;
 
+
+
 @Service
 public class ManagerService {
     @Autowired
@@ -23,30 +25,6 @@ public class ManagerService {
     ServiceTypeRepository serviceTypeRepository;
 
 
-    public void assignServiceToApartment(int apartmentId, int serviceTypeId, double quantity) {
-        Apartment apartment = apartmentRepository.findById(apartmentId).orElseThrow(() -> new EntityNotFoundException("Apartment not found"));
-        ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId).orElseThrow(() -> new EntityNotFoundException("ServiceType not found"));
 
-        ServiceUsage serviceUsage = new ServiceUsage();
-        serviceUsage.setApartment(apartment);
-        serviceUsage.setServiceType(serviceType);
-        serviceUsage.setQuantity(quantity);
-
-        serviceUsageRepository.save(serviceUsage);
-    }
-
-    public double calculateTotalExpense() {
-        List<Apartment> apartments = apartmentRepository.findAll();
-        return apartments.stream()
-                .flatMap(apartment -> apartment.getServiceUsages().stream())
-                .mapToDouble(usage -> usage.getQuantity() * usage.getServiceType().getPricePerUnit())
-                .sum();
-    }
-    public double calculateTotalExpenseForMonth(YearMonth month) {
-        List<ServiceUsage> usages = serviceUsageRepository.findByMonth(month);
-        return usages.stream()
-                .mapToDouble(usage -> usage.getQuantity() * usage.getServiceType().getPricePerUnit())
-                .sum();
-    }
 
 }

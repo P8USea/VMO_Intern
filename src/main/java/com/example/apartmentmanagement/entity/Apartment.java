@@ -1,5 +1,6 @@
 package com.example.apartmentmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +30,7 @@ public class Apartment {
 
 
     @OneToMany(mappedBy = "apartment")
+    @JsonManagedReference
     private List<Resident> residents;
 
     @ManyToOne

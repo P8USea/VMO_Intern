@@ -1,5 +1,6 @@
 package com.example.apartmentmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,6 +21,7 @@ public class Resident {
     private String name;
 
     @Column(nullable = false, unique = true)
+
     private String email;
 
     @Column(nullable = false, unique = true)
@@ -36,12 +38,9 @@ public class Resident {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "apartment_id", nullable = false)
+    @JsonBackReference
     private Apartment apartment;
 
-    @CreatedDate
-    private Date createdAt;
 
-    @LastModifiedDate
-    private Date updatedAt;
 
 }

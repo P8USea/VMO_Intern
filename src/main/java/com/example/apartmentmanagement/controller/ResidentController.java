@@ -16,11 +16,11 @@ public class ResidentController {
     private ResidentService residentService;
 
     @GetMapping("/apartment/{apartmentId}")
-    public List<Resident> getResidentsByApartment(@PathVariable int apartmentId) {
+    public List<Resident> getResidentsByApartment(@PathVariable Integer apartmentId) {
         return residentService.getResidentsByApartment(apartmentId);
     }
     @GetMapping("/{residentId}")
-    public Resident getResidentById(int residentId) {
+    public Resident getResidentById(@PathVariable("residentId") Integer residentId) {
         return residentService.getResidentById(residentId);
     }
 

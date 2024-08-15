@@ -26,10 +26,7 @@ public class DatabaseQuery {
             String query = "SELECT * FROM apartments";
             ResultSet resultSet = statement.executeQuery(query);
 
-            while (resultSet.next()) {
-                System.out.println("Column1: " + resultSet.getString("area"));
-                System.out.println("Column2: " + resultSet.getInt("rooms"));
-            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
