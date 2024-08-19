@@ -1,14 +1,6 @@
 package com.example.apartmentmanagement;
 
-import com.example.apartmentmanagement.*;
-import com.example.apartmentmanagement.entity.Resident;
-import com.example.apartmentmanagement.repository.*;
-import com.example.apartmentmanagement.service.*;
 
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;

@@ -1,10 +1,11 @@
 package com.example.apartmentmanagement.service;
 
 import com.example.apartmentmanagement.entity.Resident;
+import com.example.apartmentmanagement.entity.User;
+import com.example.apartmentmanagement.exception.AppException;
+import com.example.apartmentmanagement.exception.ErrorCode;
 import com.example.apartmentmanagement.repository.ApartmentRepository;
 import com.example.apartmentmanagement.repository.ResidentRepository;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,24 +19,24 @@ public class ResidentService {
     @Autowired
     private ApartmentRepository apartmentRepository;
 
-    public List<Resident> getResidentsByApartment( @NonNull int apartmentId){
+    public List<Resident> getResidentsByApartment(Long apartmentId){
 
         List<Resident> residents = residentRepository.findByApartmentId(apartmentId);
         if (residents.isEmpty()) {
-            throw new EntityNotFoundException("No residents found for this apartment");
+            throw new AppException(ErrorCode.RESIDENT_NOT_FOUND);
         }
         return residents;
     }
-    public Resident getResidentById(@NonNull int residentId){
-        return residentRepository.findById(residentId).orElseThrow(() -> new EntityNotFoundException("No residents found for this Id"));
+    public Resident getResidentById(Long residentId){
+        return residentRepository.findById(residentId).orElseThrow(() -> new AppException(ErrorCode.NO_RESIDENTS_IN_APARTMENT));
     }
 
     public Resident createResident(Resident resident) {
         return residentRepository.save(resident);
     }
-    public Resident updateResident(int id, Resident residentDetails){
+    /*public Resident updateResident(Long id, Resident residentDetails){
 
-        Resident resident = residentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Apartment not found with id " + id));
+        Resident resident = residentRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
         resident.setName(residentDetails.getName());
         resident.setEmail(residentDetails.getEmail());
         resident.setPhoneNumber(residentDetails.getPhoneNumber());
@@ -43,9 +44,9 @@ public class ResidentService {
         resident.setBirthYear(residentDetails.getBirthYear());
         resident.setGender(residentDetails.getGender());
         return residentRepository.save(resident);
-    }
+    }*/
 
-    public void deleteResident(int id) {
+    public void deleteResident(Long id) {
         residentRepository.deleteById(id);
     }
 }

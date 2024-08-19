@@ -1,46 +1,35 @@
 package com.example.apartmentmanagement.entity;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.util.Date;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "residents")
 public class Resident {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(nullable = false)
-    private String name;
+    private Long residentId;
 
-    @Column(nullable = false, unique = true)
+    private String name = "Fuc";
+    private int age = 36;
+    private String phoneNumber = "3636";
 
-    private String email;
-
-    @Column(nullable = false, unique = true)
-    private String phoneNumber;
-
-    @Column(nullable = false, unique = true)
-    private String identityNumber;
-
-    @Column(nullable = false)
-    private int birthYear;
-
-    @Column(nullable = false)
-    private String gender;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "apartment_id", nullable = false)
     @JsonBackReference
     private Apartment apartment;
-
-
-
 }

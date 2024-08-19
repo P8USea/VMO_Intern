@@ -1,21 +1,33 @@
 package com.example.apartmentmanagement.entity;
 
+import com.example.apartmentmanagement.entity.Role;
 import jakarta.persistence.*;
-
-import java.util.Set;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 @Entity
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long userId;
 
-    private String username;
-    private String password;
+    @Column(nullable = false, unique = true)
+    String username;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    @Column(nullable = false)
+    String password;
+    @Column(nullable = false)
+    String confirmPassword;
 
-    // getters and setters
+    @Enumerated(EnumType.STRING)
+    Role role;
+
+    String firstName;
+    String lastName;
+    String email;
+    String phone;
 }
-

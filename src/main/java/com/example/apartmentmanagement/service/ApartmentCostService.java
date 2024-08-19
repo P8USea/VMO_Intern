@@ -3,13 +3,13 @@ package com.example.apartmentmanagement.service;
 import com.example.apartmentmanagement.entity.Apartment;
 import com.example.apartmentmanagement.entity.ServiceType;
 import com.example.apartmentmanagement.entity.ServiceUsage;
+import com.example.apartmentmanagement.exception.AppException;
+import com.example.apartmentmanagement.exception.ErrorCode;
 import com.example.apartmentmanagement.repository.ApartmentRepository;
 import com.example.apartmentmanagement.repository.ServiceTypeRepository;
 import com.example.apartmentmanagement.repository.ServiceUsageRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
@@ -18,24 +18,20 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ApartmentCostService {
 
-    @Autowired
-    private ServiceUsage usage;
-    @Autowired
-    private ApartmentRepository apartmentRepository;
-    @Autowired
+public class ApartmentCostService {
+    ServiceUsage usage;
+    ApartmentRepository apartmentRepository;
     ServiceTypeRepository serviceTypeRepository;
-    @Autowired
-    private ServiceType serviceType;
-    @Autowired
-    private ServiceUsageRepository serviceUsageRepository;
+    ServiceType serviceType;
+    ServiceUsageRepository serviceUsageRepository;
+    ApartmentService apartmentService;
 
 //Tiền dịch vụ ứng với loại dịch vụ hàng tháng của 1 căn hộ trong 1 tháng
     public double ApartmentMonthlyServiceTypeCost(int apartmentId, int serviceTypeId, YearMonth month) {
         ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
-                .orElseThrow(() -> new EntityNotFoundException("ServiceType not found"));
-        Apartment apartment = apartmentRepository.findById(apartmentId).orElse(null);
+                .orElseThrow(() -> new AppException(ErrorCode.SERVICE_TYPE_NOT_FOUND));
+        Apartment apartment = apartmentService.getApartmentById(apartmentId);
 
         Optional<ServiceUsage> usage = serviceUsageRepository.findByApartmentAndServiceTypeAndMonth(apartment, serviceType, month);
 
@@ -60,9 +56,10 @@ public class ApartmentCostService {
     //Gán tiền dịch vụ của 1 loại dịch vụ cho 1 căn hộ
     public void ApartmentMonthlyServiceTypeCostAssignment(int apartmentId, int serviceTypeId, YearMonth month) {
         ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
-                .orElseThrow(() -> new EntityNotFoundException("ServiceType not found"));
-        Apartment apartment = apartmentRepository.findById(apartmentId).orElse(null);
-        Optional<ServiceUsage> usageOptional = serviceUsageRepository.findByApartmentAndServiceTypeAndMonth(apartment, serviceType, month);
+                .orElseThrow(() -> new AppException(ErrorCode.SERVICE_TYPE_NOT_FOUND));
+        Apartment apartment = apartmentService.getApartmentById(apartmentId);
+        Optional<ServiceUsage> usageOptional = serviceUsageRepository
+                .findByApartmentAndServiceTypeAndMonth(apartment, serviceType, month);
 
         usageOptional.ifPresent(usage -> {
             double totalCost = ApartmentMonthlyServiceTypeCost(apartmentId, serviceTypeId, month);
