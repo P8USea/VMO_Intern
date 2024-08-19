@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+
 public class GlobalExceptionHandler {
 
 
@@ -17,8 +18,8 @@ public class GlobalExceptionHandler {
         response.setCode(ex.getErrorCode().getCode());
         return ResponseEntity.badRequest().body(response);
     }
-    @ExceptionHandler(UsernameOrIdNotFound.class)
-    public ResponseEntity<APIResponse> handleUserUserNameAndId(UserException ex) {
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<APIResponse> handleUserUserNameAndIdException(UserException ex) {
         APIResponse response = new APIResponse();
         response.setMessage(ex.getMessage());
         response.setCode(ex.getErrorCode().getCode());
@@ -32,7 +33,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<APIResponse> handleGeneralException(UserException ex) {
+    public ResponseEntity<APIResponse> handleGeneralException(Exception ex) {
         APIResponse response = new APIResponse();
         response.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
         response.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());

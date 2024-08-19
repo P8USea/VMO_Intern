@@ -12,12 +12,15 @@ public enum ErrorCode {
     RESIDENT_NOT_FOUND(102, "Resident Not Found"),
     NO_RESIDENTS_IN_APARTMENT(103, "No Resident in Apartment"),
     USER_EXISTED(104, "User Existed"),
-    USER_NOT_FOUND(105, "User not found"),
-    PASSWORD_INCORRECT(106, "Password Incorrect"),
-    PASSWORD_MISMATCH(107, "Password Mismatch"),
-    PASSWORD_REPEAT(108, "Password Repeat"),
-    CONFIRMATION_CODE_MISMATCH(109, "Confirmation Code Mismatch"),
-    CONFIRMATION_CODE_BLANK(1010, "Confirmation Code Blank"),
+    USER_NOT_EXISTED(105, "User Not Existed"),
+    USER_NOT_FOUND(106, "User not found"),
+    PASSWORD_INCORRECT(107, "Password Incorrect"),
+    PASSWORD_MISMATCH(108, "Password Mismatch"),
+    PASSWORD_REPEAT(109, "Password Repeat"),
+    CONFIRMATION_CODE_MISMATCH(1010, "Confirmation Code Mismatch"),
+    CONFIRMATION_CODE_BLANK(1011, "Confirmation Code Blank"),
+    UNAUTHENTICATED_USER(1012, "Unauthenticated User"),
+
     ;
 
     private final int code;
