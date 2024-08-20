@@ -2,12 +2,16 @@ package com.example.apartmentmanagement.entity;
 
 import com.example.apartmentmanagement.entity.Role;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "users")
 public class User {
@@ -20,11 +24,9 @@ public class User {
 
     @Column(nullable = false)
     String password;
-    @Column(nullable = false)
     String confirmPassword;
 
-    @Enumerated(EnumType.STRING)
-    Role role;
+    Set<Role> roles;
 
     String firstName;
     String lastName;

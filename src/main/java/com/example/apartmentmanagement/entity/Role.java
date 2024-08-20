@@ -1,5 +1,13 @@
 package com.example.apartmentmanagement.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum Role {
-    RESIDENT, MANAGER
+    ASSMIN, RESIDENT, MANAGER
+    ;
+    private String name;
+    private String description;
+
 }
+

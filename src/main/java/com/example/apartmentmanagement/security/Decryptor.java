@@ -4,7 +4,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-public class SigningKeyDecryptor {
+public class Decryptor {
     private static final String ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES";
 

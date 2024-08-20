@@ -1,5 +1,6 @@
 package com.example.apartmentmanagement.service;
 
+import com.example.apartmentmanagement.entity.Role;
 import com.example.apartmentmanagement.entity.User;
 import com.example.apartmentmanagement.exception.*;
 import com.example.apartmentmanagement.repository.UserRepository;
@@ -7,11 +8,15 @@ import com.hendisantika.usermanagement.dto.ChangePasswordForm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -20,7 +25,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public Iterable<User> getAllUsers() {
+    @PreAuthorize("hasAuthority('SCOPE_ASSMIN')")
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
@@ -48,6 +54,9 @@ public class UserService {
     public User createUser(User requestUser) throws UserException {
         if (checkUsernameAvailable(requestUser) && checkPasswordValid(requestUser)) {
             requestUser.setPassword(passwordGenerator(requestUser).getPassword());
+            HashSet<Role> roles = new HashSet<>();
+            roles.add(Role.RESIDENT);
+            requestUser.setRoles(roles);
             return userRepository.save(requestUser);
         }
         throw new UserException(ErrorCode.UNCATEGORIZED_EXCEPTION);
@@ -78,6 +87,10 @@ public class UserService {
     public void deleteUser(Long id) {
         User user = getUserById(id);
         userRepository.delete(user);
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder(10);
     }
 
     public User changePassword(ChangePasswordForm form) throws Exception {

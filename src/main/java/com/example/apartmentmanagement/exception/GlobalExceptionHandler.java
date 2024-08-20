@@ -3,6 +3,7 @@ package com.example.apartmentmanagement.exception;
 import com.example.apartmentmanagement.response.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,6 +25,17 @@ public class GlobalExceptionHandler {
         response.setMessage(ex.getMessage());
         response.setCode(ex.getErrorCode().getCode());
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<APIResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED_USER;
+        return ResponseEntity.status(errorCode.getStatus()).body(
+                APIResponse.builder()
+                        .message(errorCode.getMessage())
+                        .code(errorCode.getCode())
+                        .build()
+        );
     }
     @ExceptionHandler(CustomFieldValidationException.class)
     public ResponseEntity<APIResponse> handleSomething(UserException ex) {
