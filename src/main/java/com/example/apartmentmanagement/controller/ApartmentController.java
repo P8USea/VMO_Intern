@@ -1,5 +1,7 @@
 package com.example.apartmentmanagement.controller;
 
+import com.example.apartmentmanagement.dto.request.ApartmentCreationRequest;
+import com.example.apartmentmanagement.dto.response.APIResponse;
 import com.example.apartmentmanagement.entity.Apartment;
 import com.example.apartmentmanagement.service.ApartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,9 @@ public class ApartmentController {
         return apartmentService.getApartmentById(id);
     }
     @PostMapping
-    public Apartment addApartment(@RequestBody Apartment apartment) {
+    public APIResponse<Object> addApartment(@RequestBody ApartmentCreationRequest request) {
         {
-            return apartmentService.createApartment(apartment);
+            return apartmentService.createApartment(request);
         }
     }
 

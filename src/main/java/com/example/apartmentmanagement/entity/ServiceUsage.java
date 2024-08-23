@@ -1,8 +1,8 @@
 package com.example.apartmentmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +11,9 @@ import java.time.YearMonth;
 @Data
 @Entity
 @Component
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "service_usage", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"apartment_id", "service_type_id", "month"})
@@ -25,6 +28,7 @@ public class ServiceUsage {
     double total;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "apartment_id", nullable = false)
+
     Apartment apartment; // Căn hộ sử dụng dịch vụ
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -18,10 +18,13 @@ public interface ServiceUsageRepository extends JpaRepository<ServiceUsage, Inte
     List<List<ServiceUsage>> findByApartmentId(Integer apartmentId);
 
     @Query("SELECT u FROM ServiceUsage u WHERE u.month = :month")
-    List<ServiceUsage> findByMonth(@Param("month") YearMonth month);
+    Optional<List<List<ServiceUsage>>> findByMonth(@Param("month") YearMonth month);
 
     @Query("SELECT u FROM ServiceUsage u WHERE u.apartment.id = :apartmentId AND u.month = :month")
-    List<ServiceUsage> findByApartmentAndMonth(@Param("apartmentId") int apartmentId, @Param("month") YearMonth month);
+    Optional<List<ServiceUsage>> findByApartmentAndMonth(@Param("apartmentId") int apartmentId, @Param("month") YearMonth month);
+    @Query("SELECT u FROM ServiceUsage u WHERE u.apartment.id = :apartmentId AND u.month = :month AND u.serviceType.id = :serviceTypeId")
+    Optional<ServiceUsage> findByApartmentAndServiceTypeAndMonth(int apartmentId, int serviceTypeId, YearMonth month);
 
-    Optional<ServiceUsage> findByApartmentAndServiceTypeAndMonth(Apartment apartment, ServiceType serviceType, YearMonth month);
+    boolean existsByApartmentIdAndServiceTypeIdAndMonth(int apartmentId, int serviceTypeId, YearMonth month);
+
 }

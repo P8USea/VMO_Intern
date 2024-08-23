@@ -1,5 +1,7 @@
 package com.example.apartmentmanagement.service;
 
+import com.example.apartmentmanagement.dto.response.APIResponse;
+import com.example.apartmentmanagement.dto.response.ApartmentCostResponse;
 import com.example.apartmentmanagement.entity.Apartment;
 import com.example.apartmentmanagement.entity.ServiceType;
 import com.example.apartmentmanagement.entity.ServiceUsage;
@@ -10,6 +12,7 @@ import com.example.apartmentmanagement.repository.ServiceTypeRepository;
 import com.example.apartmentmanagement.repository.ServiceUsageRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
@@ -18,54 +21,58 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-
+@Slf4j
 public class ApartmentCostService {
-    ServiceUsage usage;
-    ApartmentRepository apartmentRepository;
-    ServiceTypeRepository serviceTypeRepository;
-    ServiceType serviceType;
-    ServiceUsageRepository serviceUsageRepository;
-    ApartmentService apartmentService;
+    final ApartmentRepository apartmentRepository;
+    final ServiceTypeRepository serviceTypeRepository;
+    final ServiceUsageRepository serviceUsageRepository;
+    final ApartmentService apartmentService;
 
-//Tiền dịch vụ ứng với loại dịch vụ hàng tháng của 1 căn hộ trong 1 tháng
-    public double ApartmentMonthlyServiceTypeCost(int apartmentId, int serviceTypeId, YearMonth month) {
-        ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
-                .orElseThrow(() -> new AppException(ErrorCode.SERVICE_TYPE_NOT_FOUND));
+    public Optional<Apartment> calculateTotalCost(int apartmentId, YearMonth month) {
         Apartment apartment = apartmentService.getApartmentById(apartmentId);
-
-        Optional<ServiceUsage> usage = serviceUsageRepository.findByApartmentAndServiceTypeAndMonth(apartment, serviceType, month);
-
-        return usage.map(u -> u.getQuantity() * serviceType.getPricePerUnit())
-                .orElse(0.0);
+        List<ServiceUsage> usages = serviceUsageRepository.findByApartmentAndMonth(apartmentId, month)
+                .orElseThrow(() -> new AppException(ErrorCode.SERVICE_USAGE_NOT_FOUND));
+        apartment.setTotalCost(usages.stream().mapToDouble(ServiceUsage::getTotal).sum());
+        return Optional.of(apartment);
     }
 
-
-//Tổng tiền dịch vụ của 1 căn hộ trong 1 tháng
-    public double ApartmentMonthlyTotalCost(int apartmentId, YearMonth month) {
-        List<ServiceUsage> usages = serviceUsageRepository.findByApartmentAndMonth(apartmentId, month);
-        return usages.stream().mapToDouble(ServiceUsage::getTotal).sum();
-    }
-//Gán tiền dịch vụ cho 1 căn hộ
-    public Apartment ApartmentMonthlyTotalCostAssignment(int apartmentId, YearMonth month) {
-                Apartment apartment = apartmentRepository.findById(apartmentId).orElse(null);
-                double totalCost = ApartmentMonthlyTotalCost(apartmentId, month);
+    public ApartmentCostResponse ApartmentMonthlyTotalCost(int apartmentId, YearMonth month) {
+                Apartment apartment = apartmentService.getApartmentById(apartmentId);
+                double totalCost = calculateTotalCost(apartmentId, month).get().getTotalCost();
                 apartment.setTotalCost(totalCost);
-                return apartmentRepository.save(apartment);
+                apartmentRepository.save(apartment);
+                return ApartmentCostResponse.builder()
+                                .apartmentCost(totalCost)
+                                .apartmentId(apartmentId)
+                                .build();
 
     }
-    //Gán tiền dịch vụ của 1 loại dịch vụ cho 1 căn hộ
-    public void ApartmentMonthlyServiceTypeCostAssignment(int apartmentId, int serviceTypeId, YearMonth month) {
+    public Optional<ServiceUsage> calculateSingleCost(int apartmentId, int serviceTypeId, YearMonth month){
         ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
                 .orElseThrow(() -> new AppException(ErrorCode.SERVICE_TYPE_NOT_FOUND));
         Apartment apartment = apartmentService.getApartmentById(apartmentId);
         Optional<ServiceUsage> usageOptional = serviceUsageRepository
-                .findByApartmentAndServiceTypeAndMonth(apartment, serviceType, month);
+                .findByApartmentAndServiceTypeAndMonth(apartmentId, serviceTypeId, month);
 
         usageOptional.ifPresent(usage -> {
-            double totalCost = ApartmentMonthlyServiceTypeCost(apartmentId, serviceTypeId, month);
+            double totalCost = usageOptional.map(u -> u.getQuantity() * serviceType.getPricePerUnit()).orElse(0.0);
             usage.setTotal(totalCost);
             serviceUsageRepository.save(usage);
         });
+        return usageOptional;
     }
+    public ApartmentCostResponse ApartmentMonthlyServiceTypeCost(int apartmentId, int serviceTypeId, YearMonth month) {
+        ServiceType serviceType = serviceTypeRepository.findById(serviceTypeId)
+                .orElseThrow(() -> new AppException(ErrorCode.SERVICE_TYPE_NOT_FOUND));
+        Apartment apartment = apartmentService.getApartmentById(apartmentId);
+        return ApartmentCostResponse.builder()
+                        .serviceType(serviceType.getName())
+                        .serviceTypeCost(calculateSingleCost(apartmentId, serviceTypeId, month).get().getTotal())
+                        .apartmentId(apartmentId)
+                        .build();
+
+    }
+
+
 
 }

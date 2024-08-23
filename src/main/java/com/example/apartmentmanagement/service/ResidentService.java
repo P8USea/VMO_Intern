@@ -6,18 +6,17 @@ import com.example.apartmentmanagement.exception.AppException;
 import com.example.apartmentmanagement.exception.ErrorCode;
 import com.example.apartmentmanagement.repository.ApartmentRepository;
 import com.example.apartmentmanagement.repository.ResidentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ResidentService {
-
-    @Autowired
-    private ResidentRepository residentRepository;
-    @Autowired
-    private ApartmentRepository apartmentRepository;
+    final ResidentRepository residentRepository;
+    final ApartmentRepository apartmentRepository;
 
     public List<Resident> getResidentsByApartment(Long apartmentId){
 
@@ -34,18 +33,6 @@ public class ResidentService {
     public Resident createResident(Resident resident) {
         return residentRepository.save(resident);
     }
-    /*public Resident updateResident(Long id, Resident residentDetails){
-
-        Resident resident = residentRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
-        resident.setName(residentDetails.getName());
-        resident.setEmail(residentDetails.getEmail());
-        resident.setPhoneNumber(residentDetails.getPhoneNumber());
-        resident.setIdentityNumber(residentDetails.getIdentityNumber());
-        resident.setBirthYear(residentDetails.getBirthYear());
-        resident.setGender(residentDetails.getGender());
-        return residentRepository.save(resident);
-    }*/
-
     public void deleteResident(Long id) {
         residentRepository.deleteById(id);
     }

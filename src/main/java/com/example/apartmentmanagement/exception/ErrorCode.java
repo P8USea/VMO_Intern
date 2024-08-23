@@ -21,11 +21,10 @@ public enum ErrorCode {
     PASSWORD_REPEAT(109, "Password Repeat", HttpStatus.BAD_REQUEST),
     CONFIRMATION_CODE_MISMATCH(1010, "Confirmation Code Mismatch", HttpStatus.BAD_REQUEST),
     CONFIRMATION_CODE_BLANK(1011, "Confirmation Code Blank", HttpStatus.BAD_REQUEST),
-    UNAUTHENTICATED_USER(1012, "Unauthenticated User", HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED_USER(1013, "Unauthorized User", HttpStatus.FORBIDDEN),
-
-    ;
-
+    UNAUTHENTICATED(1012, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1013, "Unauthorized", HttpStatus.FORBIDDEN),
+    SERVICE_USAGE_NOT_FOUND(1014, "Service Usage Not Found", HttpStatus.NOT_FOUND),
+    CONFIRM_PASSWORD_MISMATCH(1015, "Confirm Password Mismatch", HttpStatus.BAD_REQUEST);
     private int code;
     private String message;
     private HttpStatus status;

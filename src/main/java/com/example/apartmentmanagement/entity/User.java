@@ -17,18 +17,17 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long userId;
+    int userId;
 
     @Column(nullable = false, unique = true)
     String username;
 
     @Column(nullable = false)
     String password;
-    String confirmPassword;
 
     Set<Role> roles;
 
-    String firstName;
+    String firstName ;
     String lastName;
     String email;
     String phone;

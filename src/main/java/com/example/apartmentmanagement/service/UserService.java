@@ -1,15 +1,22 @@
 package com.example.apartmentmanagement.service;
 
+import com.example.apartmentmanagement.dto.request.ChangePasswordRequest;
+import com.example.apartmentmanagement.dto.request.UserCreationRequest;
+import com.example.apartmentmanagement.dto.response.UserCreationResponse;
 import com.example.apartmentmanagement.entity.Role;
 import com.example.apartmentmanagement.entity.User;
 import com.example.apartmentmanagement.exception.*;
 import com.example.apartmentmanagement.repository.UserRepository;
 import com.hendisantika.usermanagement.dto.ChangePasswordForm;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,23 +25,27 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    final UserRepository userRepository;
 
     @PreAuthorize("hasAuthority('SCOPE_ASSMIN')")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    private boolean checkUsernameAvailable(User requestUser) {
-        return !userRepository.existsByUsername(requestUser.getUsername());
+    private boolean checkUsernameAvailable(String requestedUsername) {
+         if(userRepository.existsByUsername(requestedUsername))
+             throw new UserException(ErrorCode.USER_EXISTED);
+         return true;
     }
 
-    private boolean checkPasswordValid(User userRequest){
+    private boolean checkPasswordValid(UserCreationRequest userRequest){
         if (userRequest.getConfirmPassword() == null || userRequest.getConfirmPassword().isEmpty()) {
             throw new UserException(ErrorCode.CONFIRMATION_CODE_BLANK);
         }
@@ -45,32 +56,33 @@ public class UserService {
         return true;
     }
 
-    public User passwordGenerator(User requestUser){
+    public String hashPassGenerator(String rawPassword){
         PasswordEncoder encodedPassword = new BCryptPasswordEncoder(10);
-        requestUser.setPassword(encodedPassword.encode(requestUser.getPassword()));
-        return requestUser;
+        return encodedPassword.encode(rawPassword);
     }
 
-    public User createUser(User requestUser) throws UserException {
-        if (checkUsernameAvailable(requestUser) && checkPasswordValid(requestUser)) {
-            requestUser.setPassword(passwordGenerator(requestUser).getPassword());
-            HashSet<Role> roles = new HashSet<>();
-            roles.add(Role.RESIDENT);
-            requestUser.setRoles(roles);
-            return userRepository.save(requestUser);
+    public UserCreationResponse createUser(UserCreationRequest request) throws UserException {
+        if (checkUsernameAvailable(request.getUsername()) && checkPasswordValid(request)) {
+            User user = User.builder()
+                    .username(request.getUsername())
+                    .password(hashPassGenerator(request.getPassword()))
+                    .roles(Set.of(Role.RESIDENT))
+                    .build();
+            userRepository.save(user);
+            return new UserCreationResponse();
         }
         throw new UserException(ErrorCode.UNCATEGORIZED_EXCEPTION);
 
     }
 
-    public User getUserById(Long id) {
+    public User getUserById(int id) {
         return userRepository.findById(id).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
     }
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public User updateUser(Long userId, User userDetails){
+    public User updateUser(int userId, User userDetails){
         User fromUser = getUserById(userId);
         mapUser(fromUser, userDetails);
         return userRepository.save(fromUser);
@@ -82,9 +94,10 @@ public class UserService {
         to.setFirstName(from.getFirstName());
         to.setLastName(from.getLastName());
         to.setEmail(from.getEmail());
+        to.setRoles(from.getRoles());
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(int id) {
         User user = getUserById(id);
         userRepository.delete(user);
     }
@@ -93,22 +106,19 @@ public class UserService {
         return new BCryptPasswordEncoder(10);
     }
 
-    public User changePassword(ChangePasswordForm form) throws Exception {
-        User user = getUserById(form.getId());
-
-        if (!user.getPassword().matches(form.getCurrentPassword())) {
+    public User changePassword(ChangePasswordRequest request) throws UserException, AppException {
+        User user = getUserById(request.getUserId());
+        if (!hashPassGenerator(request.getOldPassword()).matches(user.getPassword())) {
             throw new UserException(ErrorCode.PASSWORD_INCORRECT);
         }
-
-        if (user.getPassword().equals(form.getNewPassword())) {
+        if (hashPassGenerator(request.getOldPassword()).equals(request.getNewPassword())) {
             throw new UserException(ErrorCode.PASSWORD_REPEAT);
         }
-
-        if (!form.getNewPassword().equals(form.getConfirmPassword())) {
-            throw new UserException(ErrorCode.PASSWORD_MISMATCH);
+        if(!request.getNewPassword().equals(request.getNewConfirmPassword())){
+            throw new UserException(ErrorCode.CONFIRM_PASSWORD_MISMATCH);
         }
 
-        String encodePassword = passwordGenerator(user).getPassword();
+        String encodePassword = hashPassGenerator(request.getNewPassword());
         user.setPassword(encodePassword);
         return userRepository.save(user);
     }
