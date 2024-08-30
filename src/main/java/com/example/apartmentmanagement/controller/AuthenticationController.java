@@ -14,6 +14,8 @@ import com.example.apartmentmanagement.service.ApartmentCostService;
 import com.example.apartmentmanagement.service.ApartmentService;
 import com.example.apartmentmanagement.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,31 +34,35 @@ import java.util.List;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Authentication Controller")
 public class AuthenticationController {
     AuthenticationService authenticationService;
     ApartmentService apartmentService;
     ApartmentCostService apartmentCostService;
     ServiceTypeRepository serviceTypeRepository;
     @PostMapping("/log-in")
+    @Operation(summary = "Authenticate user", description = "Give an exact token by server if authenticated")
     public APIResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         var result = authenticationService.authenticate(request);
         return APIResponse.<AuthenticationResponse>builder()
                 .result(result)
                 .build();
     }
+    @Operation(summary = "Introspect input token", description = "Give a clue whether input token is valid")
     @PostMapping("/introspect")
     public APIResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
         var result = authenticationService.introspect(request);
         return APIResponse.<IntrospectResponse>builder().result(result).build();
 
     }
+    @Operation(summary = "refresh token", description = "Refresh token by the expiry time")
     @PostMapping("/refresh")
     APIResponse<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
             throws ParseException, JOSEException {
         var result = authenticationService.refreshToken(request);
         return APIResponse.<AuthenticationResponse>builder().result(result).build();
     }
-
+    @Operation(summary = "Log out", description = "Log out user, the given token will be invalid")
     @PostMapping("/log-out")
     APIResponse<Void> logout(@RequestBody LogOutRequest request) throws ParseException, JOSEException {
         authenticationService.logout(request);

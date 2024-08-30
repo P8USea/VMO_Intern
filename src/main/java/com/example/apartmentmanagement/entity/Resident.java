@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class Resident{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long residentId;
+    private Integer residentId;
 
     @OneToOne
     @JoinColumn(name = "user_id")

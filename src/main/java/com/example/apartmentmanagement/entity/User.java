@@ -17,7 +17,7 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int userId;
+    int id;
 
     @Column(nullable = false, unique = true)
     String username;
@@ -27,6 +27,8 @@ public class User {
 
     Set<Role> roles;
 
+    @Column(name = "is_deleted")
+    boolean is_Deleted = false;
     String firstName ;
     String lastName;
     String email;

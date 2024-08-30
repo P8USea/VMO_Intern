@@ -7,6 +7,8 @@ import com.example.apartmentmanagement.entity.ServiceUsage;
 import com.example.apartmentmanagement.repository.ServiceTypeRepository;
 import com.example.apartmentmanagement.repository.ServiceUsageRepository;
 import com.example.apartmentmanagement.service.ApartmentCostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +21,13 @@ import java.time.YearMonth;
 @RestController
 @RequestMapping("/api/apartments")
 @RequiredArgsConstructor
+@Tag(name = "Apartment Cost Controller")
 public class ApartmentCostController {
     private static final Logger log = LoggerFactory.getLogger(ApartmentCostController.class);
     final ApartmentCostService apartmentCostService;
     final ServiceUsageRepository serviceUsageRepository;
     final ServiceTypeRepository serviceTypeRepository;
-
+    @Operation(summary = "Give the cost of a service")
     @GetMapping("/{apartmentId}/cost/{serviceTypeId}")
     public APIResponse<Object> serviceTypeCost(
             @PathVariable int apartmentId,
@@ -51,7 +54,7 @@ public class ApartmentCostController {
 
         return ResponseEntity.ok(totalCost);
     }*/
-
+    @Operation(summary = "Give the total cost of an apartment")
     @GetMapping("/{apartmentId}/total-cost")
     public APIResponse<ApartmentCostResponse> totalCost(
             @PathVariable int apartmentId,

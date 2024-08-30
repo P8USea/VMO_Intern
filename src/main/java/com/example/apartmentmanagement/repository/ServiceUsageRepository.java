@@ -27,4 +27,5 @@ public interface ServiceUsageRepository extends JpaRepository<ServiceUsage, Inte
 
     boolean existsByApartmentIdAndServiceTypeIdAndMonth(int apartmentId, int serviceTypeId, YearMonth month);
 
+    List<ServiceUsage> findByApartmentIdAndMonth(int id, YearMonth currentMonth);
 }

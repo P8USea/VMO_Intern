@@ -29,6 +29,8 @@ public class Apartment {
     boolean available;
     int capacity;
     double totalCost;
+    @Transient
+    int proxyId;
 
     @OneToMany(mappedBy = "apartment")
     @JsonManagedReference

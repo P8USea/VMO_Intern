@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum Role {
-    ASSMIN, RESIDENT, MANAGER
+    ADMIN, RESIDENT, MANAGER
     ;
     private String name;
     private String description;

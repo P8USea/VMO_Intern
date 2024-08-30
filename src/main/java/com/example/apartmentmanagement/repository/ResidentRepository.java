@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ResidentRepository extends JpaRepository<Resident, Long> {
-    List<Resident> findByApartmentId(Long apartmentId);
+public interface ResidentRepository extends JpaRepository<Resident, Integer> {
+    List<Resident> findByApartmentId(Integer apartmentId);
 }

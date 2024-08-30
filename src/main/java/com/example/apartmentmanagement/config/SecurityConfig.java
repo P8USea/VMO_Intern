@@ -31,6 +31,7 @@ public class SecurityConfig {
       http.authorizeHttpRequests(request
         -> request.
               requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
+              .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
               .anyRequest().authenticated());
       http.oauth2ResourceServer(oauth2 ->
               oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));

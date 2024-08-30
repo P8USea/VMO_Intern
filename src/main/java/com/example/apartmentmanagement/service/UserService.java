@@ -12,6 +12,7 @@ import com.hendisantika.usermanagement.dto.ChangePasswordForm;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
@@ -27,16 +28,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserService {
     final UserRepository userRepository;
 
-    @PreAuthorize("hasAuthority('SCOPE_ASSMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAllActiveUsers();
     }
 
     private boolean checkUsernameAvailable(String requestedUsername) {
@@ -88,7 +89,6 @@ public class UserService {
         return userRepository.save(fromUser);
     }
 
-
     protected void mapUser(User from, User to) {
         to.setUsername(from.getUsername());
         to.setFirstName(from.getFirstName());
@@ -99,7 +99,9 @@ public class UserService {
 
     public void deleteUser(int id) {
         User user = getUserById(id);
-        userRepository.delete(user);
+        user.set_Deleted(true);
+        userRepository.save(user);
+        log.info("Deleted user: " + user.getUsername());
     }
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -122,4 +124,5 @@ public class UserService {
         user.setPassword(encodePassword);
         return userRepository.save(user);
     }
+
 }

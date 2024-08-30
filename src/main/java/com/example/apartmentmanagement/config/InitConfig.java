@@ -38,16 +38,17 @@ public class InitConfig {
         List<ServiceType> serviceTypes = serviceTypeRepository.findAll();
         YearMonth month = YearMonth.parse("2024-08");
         return args -> {
-            if (!userRepository.existsByUsername("SuperAssmin")){
+            if (!userRepository.existsByUsername("SuperAdmin1")){
                 HashSet<Role> roles = new HashSet<>();
-                roles.add(Role.ASSMIN);
+                roles.add(Role.ADMIN);
                 User user = User.builder()
-                        .username("SuperAssmin")
-                        .password(passwordEncoder.encode("assmin"))
+                        .username("SuperAdmin1")
+                        .password(passwordEncoder.encode("admin"))
                         .roles(roles)
+                        .email("funnylov32003@gmail.com")
                         .build();
                 userRepository.save(user);
-                log.info("SuperAssmin has been created");
+                log.info("SuperAdmin has been created");
 
             }
 

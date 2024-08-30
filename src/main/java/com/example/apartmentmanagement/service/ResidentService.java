@@ -18,7 +18,7 @@ public class ResidentService {
     final ResidentRepository residentRepository;
     final ApartmentRepository apartmentRepository;
 
-    public List<Resident> getResidentsByApartment(Long apartmentId){
+    public List<Resident> getResidentsByApartment(Integer apartmentId){
 
         List<Resident> residents = residentRepository.findByApartmentId(apartmentId);
         if (residents.isEmpty()) {
@@ -26,14 +26,14 @@ public class ResidentService {
         }
         return residents;
     }
-    public Resident getResidentById(Long residentId){
+    public Resident getResidentById(Integer residentId){
         return residentRepository.findById(residentId).orElseThrow(() -> new AppException(ErrorCode.NO_RESIDENTS_IN_APARTMENT));
     }
 
     public Resident createResident(Resident resident) {
         return residentRepository.save(resident);
     }
-    public void deleteResident(Long id) {
+    public void deleteResident(Integer id) {
         residentRepository.deleteById(id);
     }
 }
