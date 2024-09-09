@@ -25,7 +25,7 @@ public class SecurityConfig {
     private String signerKey;
 
     private final String[] PUBLIC_ENDPOINT= {"/api/user", "auth/introspect", "auth/log-in"
-                                        , "/api/apartments", "/api/residents"};
+                                        , "/api/apartments", "/api/residents", "/api/manager"};
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
       http.authorizeHttpRequests(request

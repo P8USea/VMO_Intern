@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
@@ -70,7 +71,7 @@ public class MailService {
 
         mailSender.send(mimeMessage);
     }
-
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public void sendBillingEmailsToResidents() {
         List<Resident> residents = residentRepository.findAll();
         YearMonth currentMonth = YearMonth.now();

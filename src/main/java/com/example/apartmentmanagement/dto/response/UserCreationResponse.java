@@ -1,14 +1,15 @@
 package com.example.apartmentmanagement.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserCreationResponse {
-    private String message = "User has been created";
+    int userId;
+    String userName;
+    String message = "User ${userName} has been created";
 }

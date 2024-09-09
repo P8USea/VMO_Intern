@@ -2,30 +2,25 @@ package com.example.apartmentmanagement.service;
 
 import com.example.apartmentmanagement.dto.request.ChangePasswordRequest;
 import com.example.apartmentmanagement.dto.request.UserCreationRequest;
-import com.example.apartmentmanagement.dto.response.UserCreationResponse;
 import com.example.apartmentmanagement.entity.Role;
 import com.example.apartmentmanagement.entity.User;
 import com.example.apartmentmanagement.exception.*;
 import com.example.apartmentmanagement.repository.UserRepository;
-import com.hendisantika.usermanagement.dto.ChangePasswordForm;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -57,20 +52,20 @@ public class UserService {
         return true;
     }
 
+
     public String hashPassGenerator(String rawPassword){
         PasswordEncoder encodedPassword = new BCryptPasswordEncoder(10);
         return encodedPassword.encode(rawPassword);
     }
 
-    public UserCreationResponse createUser(UserCreationRequest request) throws UserException {
+    public User createUser(UserCreationRequest request) throws UserException {
         if (checkUsernameAvailable(request.getUsername()) && checkPasswordValid(request)) {
             User user = User.builder()
                     .username(request.getUsername())
                     .password(hashPassGenerator(request.getPassword()))
                     .roles(Set.of(Role.RESIDENT))
                     .build();
-            userRepository.save(user);
-            return new UserCreationResponse();
+            return userRepository.save(user);
         }
         throw new UserException(ErrorCode.UNCATEGORIZED_EXCEPTION);
 
@@ -109,7 +104,7 @@ public class UserService {
     }
 
     public User changePassword(ChangePasswordRequest request) throws UserException, AppException {
-        User user = getUserById(request.getUserId());
+        User user = getUserByUsername(request.getUserName());
         if (!hashPassGenerator(request.getOldPassword()).matches(user.getPassword())) {
             throw new UserException(ErrorCode.PASSWORD_INCORRECT);
         }
@@ -124,5 +119,16 @@ public class UserService {
         user.setPassword(encodePassword);
         return userRepository.save(user);
     }
-
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    public void makeUserResident(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        user.setRoles(Set.of(Role.RESIDENT));
+        userRepository.save(user);
+    }
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public void makeUserManager(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        user.setRoles(Set.of(Role.MANAGER));
+        userRepository.save(user);
+    }
 }

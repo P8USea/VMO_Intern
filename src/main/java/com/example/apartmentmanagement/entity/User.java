@@ -29,6 +29,7 @@ public class User {
 
     @Column(name = "is_deleted")
     boolean is_Deleted = false;
+
     String firstName ;
     String lastName;
     String email;

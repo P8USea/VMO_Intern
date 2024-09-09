@@ -1,5 +1,6 @@
 package com.example.apartmentmanagement.controller;
 
+import com.example.apartmentmanagement.dto.request.ChangePasswordRequest;
 import com.example.apartmentmanagement.dto.request.UserCreationRequest;
 import com.example.apartmentmanagement.dto.response.UserCreationResponse;
 import com.example.apartmentmanagement.entity.User;
@@ -54,7 +55,10 @@ public class UserController {
     public APIResponse<UserCreationResponse> addUser(@RequestBody UserCreationRequest request){
         var result = userService.createUser(request);
         return APIResponse.<UserCreationResponse>builder()
-                .result(result)
+                .result(UserCreationResponse.builder()
+                        .userName(result.getUsername())
+                        .userId(result.getId())
+                        .build())
                 .build();
     }
     @Operation(summary = "Update existing users by id")
@@ -70,5 +74,27 @@ public class UserController {
         return APIResponse.builder()
                 .result("User deleted")
                 .build();
+    }
+    @PostMapping("/makeRe/{userId}")
+    public APIResponse<Object> makeResident(@PathVariable int userId){
+        userService.makeUserResident(userId);
+        return APIResponse.builder()
+                .message("Make user with id " + userId + " resident successfully")
+                .build();
+    }
+    @PostMapping("/makeMa/{userId}")
+    public APIResponse<Object> makeManager(@PathVariable int userId){
+        userService.makeUserManager(userId);
+        return APIResponse.builder()
+                .message("Make user with id " + userId + " manager successfully")
+                .build();
+    }
+    @PutMapping("/pwd")
+    public APIResponse<Object> changePassword(@RequestBody ChangePasswordRequest request){
+        userService.changePassword(request);
+        return APIResponse.builder()
+                .message("Change password successfully")
+                .build();
+
     }
 }

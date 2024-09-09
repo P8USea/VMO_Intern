@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
@@ -27,7 +28,7 @@ public class ApartmentService {
     final ApartmentRepository apartmentRepository;
     final ServiceTypeRepository serviceTypeRepository;
     final ServiceUsageRepository serviceUsageRepository;
-
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public List<Apartment> getAllApartments() {
         return apartmentRepository.findAll();
     }
@@ -35,7 +36,7 @@ public class ApartmentService {
     public Apartment getApartmentById(int apartmentId) {
         return apartmentRepository.findById(apartmentId).orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
     }
-
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public APIResponse<Object> createApartment(ApartmentCreationRequest request) {
         Apartment apartment = Apartment.builder()
                 .number(request.getNumber())
@@ -49,7 +50,7 @@ public class ApartmentService {
                 .result("New apartment created")
                 .build();
     }
-
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public Apartment updateApartment(int id, Apartment apartmentDetails) {
         Apartment apartment = apartmentRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
         apartment.setId(apartmentDetails.getId());
@@ -60,7 +61,7 @@ public class ApartmentService {
         return apartmentRepository.save(apartment);
 
     }
-
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public void deleteApartment(int apartmentId) {
         apartmentRepository.deleteById(apartmentId);
     }

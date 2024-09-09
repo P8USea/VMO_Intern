@@ -18,13 +18,6 @@ public class GlobalExceptionHandler {
         response.setCode(ex.getErrorCode().getCode());
         return ResponseEntity.badRequest().body(response);
     }
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<APIResponse> handleUserUserNameAndIdException(UserException ex) {
-        APIResponse response = new APIResponse();
-        response.setMessage(ex.getMessage());
-        response.setCode(ex.getErrorCode().getCode());
-        return ResponseEntity.badRequest().body(response);
-    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<APIResponse> handleAccessDeniedException(AccessDeniedException ex) {
@@ -35,13 +28,6 @@ public class GlobalExceptionHandler {
                         .code(errorCode.getCode())
                         .build()
         );
-    }
-    @ExceptionHandler(CustomFieldValidationException.class)
-    public ResponseEntity<APIResponse> handleSomething(UserException ex) {
-        APIResponse response = new APIResponse();
-        response.setMessage(ex.getMessage());
-        response.setCode(ex.getErrorCode().getCode());
-        return ResponseEntity.badRequest().body(response);
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIResponse> handleGeneralException(Exception ex) {

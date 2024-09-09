@@ -23,7 +23,8 @@ public class Resident{
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "apartment_id", nullable = false)
+    @JoinColumn(name = "apartment_id")
     @JsonBackReference
     private Apartment apartment;
+
 }

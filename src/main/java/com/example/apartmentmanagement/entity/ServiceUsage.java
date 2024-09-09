@@ -27,7 +27,7 @@ public class ServiceUsage {
     YearMonth month;
     double total;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "apartment_id", nullable = false)
+    @JoinColumn(name = "apartment_id")
 
     Apartment apartment; // Căn hộ sử dụng dịch vụ
 
