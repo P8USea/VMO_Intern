@@ -41,19 +41,6 @@ public class ApartmentCostController {
                 .build();
     }
 
-   /* @PostMapping("/{apartmentId}/total-cost")
-    public ResponseEntity<Double> calculateAndSaveTotalCost(
-            @PathVariable int apartmentId,
-            @RequestParam("month") String month) {
-
-        YearMonth yearMonth = YearMonth.parse(month);
-        double totalCost = apartmentCostService.getServiceUsage(apartmentId, yearMonth);
-
-        // Lưu kết quả vào database
-        apartmentCostService.ApartmentMonthlyTotalCost(apartmentId, yearMonth);
-
-        return ResponseEntity.ok(totalCost);
-    }*/
     @Operation(summary = "Give the total cost of an apartment")
     @GetMapping("/{apartmentId}/total-cost")
     public APIResponse<ApartmentCostResponse> totalCost(

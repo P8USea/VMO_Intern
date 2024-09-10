@@ -20,6 +20,8 @@ import java.time.YearMonth;
 import java.util.HashSet;
 import java.util.List;
 
+
+//Config cho quyền admin(test)
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -38,11 +40,11 @@ public class InitConfig {
         List<ServiceType> serviceTypes = serviceTypeRepository.findAll();
         YearMonth month = YearMonth.parse("2024-08");
         return args -> {
-            if (!userRepository.existsByUsername("SuperAdmin1")){
+            if (!userRepository.existsByUsername("SuperAdmin")){
                 HashSet<Role> roles = new HashSet<>();
                 roles.add(Role.ADMIN);
                 User user = User.builder()
-                        .username("SuperAdmin1")
+                        .username("SuperAdmin")
                         .password(passwordEncoder.encode("admin"))
                         .roles(roles)
                         .email("funnylov32003@gmail.com")

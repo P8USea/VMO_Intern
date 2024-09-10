@@ -45,9 +45,4 @@ public class ApartmentController {
     public void deleteApartment(@PathVariable Integer id) {
         apartmentService.deleteApartment(id);
     }
-    @Operation(summary = "Set proxy")
-    @PutMapping
-    public void setProxy(@PathVariable Integer apartmentId, @PathVariable Integer proxyId) {
-        apartmentService.getApartmentById(apartmentId).setProxyId(proxyId);
-    }
 }

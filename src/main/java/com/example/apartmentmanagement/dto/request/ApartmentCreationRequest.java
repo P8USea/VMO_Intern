@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApartmentCreationRequest {
-    int number;
+    String number;
     double area;
     int rooms;
     boolean available;

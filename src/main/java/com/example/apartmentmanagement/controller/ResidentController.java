@@ -44,22 +44,6 @@ public class ResidentController {
                 .result(residentService.ResidentToResponse(result))
                 .build();
     }
-
-    @PostMapping
-    public Resident createResident(@RequestBody Resident resident) {
-        return residentService.createResident(resident);
-    }
-
-    /*@PutMapping("/{residentId}")
-    public Resident updateResident(@PathVariable Long residentId, @RequestBody Resident resident) {
-        resident.setId(residentId);
-        return residentService.updateResident(residentId, resident);
-    }*/
-    @Operation(summary = "Delete resident")
-    @DeleteMapping("/{residentId}")
-    public void deleteResident(@PathVariable Integer residentId) {
-        residentService.deleteResident(residentId);
-    }
     @PostMapping("/assign/{residentId}-{apartmentId}")
     public APIResponse<Object> assignResident(
             @PathVariable int residentId

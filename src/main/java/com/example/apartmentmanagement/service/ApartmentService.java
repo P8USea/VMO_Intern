@@ -36,7 +36,7 @@ public class ApartmentService {
     public Apartment getApartmentById(int apartmentId) {
         return apartmentRepository.findById(apartmentId).orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
     }
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+
     public APIResponse<Object> createApartment(ApartmentCreationRequest request) {
         Apartment apartment = Apartment.builder()
                 .number(request.getNumber())
@@ -66,8 +66,5 @@ public class ApartmentService {
         apartmentRepository.deleteById(apartmentId);
     }
 
-    public List<ServiceType> getServiceTypes() {
-        return serviceTypeRepository.findAll();
-    }
 
 }

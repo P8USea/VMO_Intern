@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import javax.crypto.spec.SecretKeySpec;
 
+//Config csrf
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -25,7 +26,7 @@ public class SecurityConfig {
     private String signerKey;
 
     private final String[] PUBLIC_ENDPOINT= {"/api/user", "auth/introspect", "auth/log-in"
-                                        , "/api/apartments", "/api/residents", "/api/manager"};
+                                        , "/api/apartments", "/api/residents"};
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
       http.authorizeHttpRequests(request
@@ -47,4 +48,5 @@ public class SecurityConfig {
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
     }
+
 }

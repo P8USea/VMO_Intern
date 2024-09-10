@@ -31,13 +31,6 @@ public class ResidentService {
     public Resident getResidentById(Integer residentId){
         return residentRepository.findById(residentId).orElseThrow(() -> new AppException(ErrorCode.RESIDENT_NOT_FOUND));
     }
-
-    public Resident createResident(Resident resident) {
-        return residentRepository.save(resident);
-    }
-    public void deleteResident(Integer id) {
-        residentRepository.deleteById(id);
-    }
     public void assignResident(Integer residentId, Integer apartmentId) {
         Resident resident = getResidentById(residentId);
         Apartment apartment = apartmentRepository.findById(apartmentId).orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));

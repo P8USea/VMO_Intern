@@ -23,14 +23,12 @@ public class Apartment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
-    int number; //Số phòng != id phòng
+    String number; //Số phòng != id phòng
     double area;
     int rooms;
     boolean available;
     int capacity;
     double totalCost;
-    @Transient
-    int proxyId;
 
     @OneToMany(mappedBy = "apartment")
     @JsonManagedReference

@@ -57,7 +57,7 @@ public class AuthenticationController {
     }
     @Operation(summary = "refresh token", description = "Refresh token by the expiry time")
     @PostMapping("/refresh")
-    APIResponse<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
+    APIResponse<AuthenticationResponse> refresh(@RequestBody RefreshRequest request)
             throws ParseException, JOSEException {
         var result = authenticationService.refreshToken(request);
         return APIResponse.<AuthenticationResponse>builder().result(result).build();

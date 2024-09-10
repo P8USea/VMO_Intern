@@ -49,17 +49,6 @@ public class MailService {
 
         mailSender.send(message);
     }
-    public void autoEmailSender() {
-        SimpleMailMessage message = new SimpleMailMessage();
-        for (Apartment apartment : apartmentRepository.findAll()) {
-            String email = residentRepository.findById(apartment.getProxyId()).get().getUser().getEmail();
-            message.setTo(email);
-            message.setSubject(subject);
-            message.setFrom(from);
-            message.setText("Phí dịch vụ của căn hộ {}: \n" + apartment.getId() +
-                    apartment.getServiceUsages());
-        }
-    }
     public void sendHtmlEmail(String to, String subject, String htmlBody) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");

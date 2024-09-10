@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
-
+//Config swagger
 @Configuration
 public class OpenAPIConfig {
 
