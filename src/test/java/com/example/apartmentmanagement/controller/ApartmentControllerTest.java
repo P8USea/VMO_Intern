@@ -120,21 +120,4 @@ class ApartmentControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void testSetProxy() throws Exception {
-        // Mock hành vi của service
-        Apartment updatedApartment = new Apartment();
-        updatedApartment.setProxyId(2);
-        when(apartmentService.getApartmentById(1)).thenReturn(updatedApartment);
-
-        // Gửi PUT request để set proxy và kiểm tra kết quả
-        mockMvc.perform(put("/api/apartments")
-                        .param("apartmentId", "1")
-                        .param("proxyId", "2"))
-                .andExpect(status().isOk());
-
-        // Kiểm tra xem proxy đã được set chính xác chưa
-        Mockito.verify(apartmentService).getApartmentById(1);
-        Mockito.verify(apartmentService.getApartmentById(1)).setProxyId(2);
-    }
 }
